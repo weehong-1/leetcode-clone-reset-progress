@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LeetTrace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inconsolata&family=JetBrains+Mono&family=Roboto+Mono&family=Source+Code+Pro&display=swap"
+    />
+    <script>
+      // Apply the persisted theme before first paint to avoid a flash.
+      // Mirrors the "theme-preferences" Zustand persist store.
+      (function () {
+        try {
+          var raw = localStorage.getItem("theme-preferences");
+          var mode = raw ? JSON.parse(raw).state.mode : "system";
+          var dark =
+            mode === "dark" ||
+            (mode !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (error) {
+          /* localStorage unavailable or malformed — fall back to light. */
+        }
+      })();
+      // Apply the persisted font size to the root before first paint so the
+      // whole UI is sized correctly without a reflow on load.
+      (function () {
+        try {
+          var raw = localStorage.getItem("editor-preferences");
+          var size = raw ? JSON.parse(raw).state.fontSize : 14;
+          if (typeof size === "number") {
+            document.documentElement.style.fontSize = size + "px";
+          }
+        } catch (error) {
+          /* localStorage unavailable or malformed — keep the browser default. */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

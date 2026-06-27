@@ -1,0 +1,34 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"types": ["node"],
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+		"verbatimModuleSyntax": false,
+
+		/* Shared cross-cutting types (type-only; erased at runtime by tsx) */
+		"baseUrl": ".",
+		"paths": {
+			"@shared": ["../shared/src/index.ts"],
+			"@shared/*": ["../shared/src/*"]
+		},
+
+		/* Linting (mirrors the frontend tsconfig for consistency) */
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noUncheckedIndexedAccess": true,
+		"forceConsistentCasingInFileNames": true,
+
+		"skipLibCheck": true,
+		"noEmit": true
+	},
+	"include": ["**/*.ts"]
+}

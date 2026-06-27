@@ -1,0 +1,54 @@
+# Full dev stack: MongoDB + backend API (with formatters baked in) + frontend.
+# Deploy with:  docker compose up --build
+# Secrets (LEETCODE_SESSION, CSRF_TOKEN, OPENAI_API_KEY, MONGO_USER/PASSWORD)
+# are read from a root .env file via ${VAR} interpolation; all have safe
+# defaults so the stack boots without them.
+
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-leetcode}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-leetcode}
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: "3001"
+      MONGODB_URI: mongodb://${MONGO_USER:-leetcode}:${MONGO_PASSWORD:-leetcode}@mongo:27017/leettrace?authSource=admin
+      LEETCODE_SESSION: ${LEETCODE_SESSION:-}
+      CSRF_TOKEN: ${CSRF_TOKEN:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://openrouter.ai/api/v1}
+      GOOGLE_JAVA_FORMAT_JAR: /opt/google-java-format.jar
+    ports:
+      - "3001:3001"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  mongo-data:

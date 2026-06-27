@@ -1,0 +1,17 @@
+# Never copy host installs / build output / secrets into the build context.
+node_modules
+**/node_modules
+dist
+.git
+.gitignore
+.env
+.env.*
+coverage
+playwright-report
+test-results
+blob-report
+*.log
+.claude
+.vscode
+.idea
+e2e
